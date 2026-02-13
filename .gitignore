@@ -1,0 +1,4 @@
+assets/weights/*
+*.pth
+*.ckpt
+*.onnx
