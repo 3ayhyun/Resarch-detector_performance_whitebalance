@@ -1,7 +1,8 @@
 import torch
 import ultralytics
+from .base_detector import BaseDetector
 
-class YOLOWorld:
+class YOLOWorld(BaseDetector):
     def __init__(self, config):
         self.config = config
         self.weight_path = config.get('weight_path', 'assets/weights/yolo8s-world.pt')

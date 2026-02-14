@@ -1,8 +1,9 @@
 import torch, cv2
 import numpy as np
 from .GroundingDINO.groundingdino.util.inference import load_model, predict
+from .base_detector import BaseDetector
 
-class GroundingDINO:
+class GroundingDINO(BaseDetector):
     def __init__(self, config):
         self.config = config
         self.model_config_path = config.get(

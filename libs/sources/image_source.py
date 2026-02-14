@@ -2,8 +2,9 @@ import os
 import glob
 import cv2
 import time
+from .base_source import BaseSource
 
-class ImageSource:
+class ImageSource(BaseSource):
     def __init__(self, config):
         self.config = config
         self.assets_path = config.get('assets_path', 'assets/images')
@@ -40,6 +41,6 @@ class ImageSource:
             frame_id = self.idx
             self.idx += 1 # 다음 read 호출시 다음프레임 이미지를 반환하기 위해 
         else: # 더이상 읽어들일 파일이 없는 경우
-            frame_id, imagea = None, None
+            frame_id, image = None, None
 
         return frame_id, image
