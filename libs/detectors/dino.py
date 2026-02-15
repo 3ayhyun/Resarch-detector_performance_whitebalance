@@ -1,6 +1,6 @@
 import torch, cv2
 import numpy as np
-from .GroundingDINO.groundingdino.util.inference import load_model, predict
+from .GroundingDINO.groundingdino.util.inference import load_model, load_image, predict
 from .base_detector import BaseDetector
 
 class GroundingDINO(BaseDetector):
@@ -11,10 +11,23 @@ class GroundingDINO(BaseDetector):
             'libs/detectors/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py'
             )
         self.weight_path = config.get('weight_path', 'assets/weights/groundingdino_swint_ogc.pth')
-        self.classes = config.get('classes', ['person'])
+        self.classes = config.get('classes', ['person']) 
+        # grounding dino는 클래스를 문자열로 받는다 여러개일 경우 .으로 구분 ex) 'person. dogs. ...'
+        # 다른 형태로 들어올 경우 'person'으로 강제후 입력형태 출력하도록 한다 
+        if not isinstance(self.classes, list):
+            raise TypeError ("classes must be a  list | example : ['person', 'dog', ...]")
+        
+        self.classes = " . ".join(self.classes)
+
         self.box_threshold = config.get('box_threshold', 0.3)
         self.text_threshold = config.get('text_threshold', 0.25)
+
         self.device = config.get('device', 'cpu')
+        if self.device == 'cuda' and torch.cuda.is_available():
+            self.device = 'cuda'
+        else: 
+            self.device = 'cpu'
+
         self.with_nms = config.get('with_nms', True)
         self.nms_thresh = config.get('nms_thresh', 0.5)
 
@@ -27,7 +40,7 @@ class GroundingDINO(BaseDetector):
         
         print('[GroundingDINO] Initialized')
 
-    def detect(self, img):
+    def predict(self, img):
         '''
             grounding dino는 이미지를 torch.Tensor형태로 받는다 
             => img를 predict하기전 torch.Tensor형태로 변환해야한다 
@@ -36,16 +49,21 @@ class GroundingDINO(BaseDetector):
         mean, std = [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]
 
         # dino의 predict는 이미지를 RGB 형태로 받아야한다 image_source.py를 통해 받은 img는 BGR형태이므로 변환한다 
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
         # numpy 형태로 변환후 정규화 작업
         image = image.astype(np.float32) / 255.0
         image = (image - mean) / std
-        # torch.Tensor 형태인 (channel, height, weight)로 바꿔준 후 unsqueeze를 통해 배치차원 추가
+        # torch.Tensor 형태인 (channel, height, weight)로
         image = np.transpose(image, (2, 0, 1))
-        image = torch.Tensor(image).unsqueeze(0) # dino는 여러장의 이미지가 들어올 경우 처리하기 위해 몇장인지 알아야하므로 배치차원추가
+        image = torch.Tensor(image)
 
-        bboxes, scores, labels = predict(self.model, image, self.classes)
+        bboxes, scores, labels = predict(self.model, 
+                                         image,
+                                         self.classes, 
+                                         box_threshold=self.box_threshold, 
+                                         text_threshold=self.text_threshold,
+                                         device=self.device)
         '''
             bboxes : bounding box( 정규화된 [cx, cy, width, height] )
             scores : 입력한 텍스트와 박스가 얼마나 유사한가 

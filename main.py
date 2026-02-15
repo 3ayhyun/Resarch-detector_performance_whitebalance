@@ -11,7 +11,10 @@ from predict.predict_pipeline import PredictPipeline
 from output.output_pipeline import OutputPipeline
 
 if __name__ == '__main__':
-    mp.set_start_method("spawn")
+    try:
+        mp.set_start_method("spawn")
+    except RuntimeError:
+        pass
 
     results_queue = mp.Queue() # detection_resutls를 저장할 공간  => predict의 결과를 저장하고 이를 output_pipeline에서 사용
 

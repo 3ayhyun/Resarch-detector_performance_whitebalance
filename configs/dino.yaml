@@ -1,9 +1,9 @@
 predict:
   detector:
-    type : grounding_dino
+    type : GroundingDINO
     model_config_path : 'libs/detectors/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py'
-    weight_path : 'libs/assets/weights/groundingdino_swint_ogc.pth'
-    classes : ["person"]
+    weight_path : 'assets/weights/groundingdino_swint_ogc.pth'
+    classes : ['person']
     box_threshold : 0.3
     text_threshol : 0.25
     device : "cuda"
@@ -18,7 +18,7 @@ output:
 
     - type : "LogHandler"
       dir : "./logs"
-      file_name : "yoloworld_results_log.csv"
+      file_name : "dino_results_log.csv"
 
 source:
   type : 'ImageSource'
