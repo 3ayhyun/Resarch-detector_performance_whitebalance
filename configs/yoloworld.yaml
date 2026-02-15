@@ -1,0 +1,23 @@
+predict:
+  detector: 
+    type : "YOLOWorld"
+    weight_path : "assets/weights/yolov8s-worldv2.pt"
+    conf : 0.25
+    iou : 0.7
+    imgsz : 640
+    classes : ["white shirts"]
+output:
+  handler:
+    - type : "ScreenHandler"
+      view_w : 640
+      view_h : 360
+
+    - type : "LogHandler"
+      dir : "./logs"
+      file_name : "yoloworld_results_log.csv"
+
+source:
+  type : 'ImageSource'
+  assets_path : "assets/images"
+  pattern : "*.jpg"
+  fps : 30

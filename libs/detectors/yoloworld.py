@@ -23,7 +23,7 @@ class YOLOWorld(BaseDetector):
         print('[YOLOWorld] Initialized')
         
 
-    def detect(self, img):
+    def predict(self, img):
         '''
             img를 통한 yoloworld의 detection 결과를 반환한다 
         '''

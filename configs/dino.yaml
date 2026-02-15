@@ -1,0 +1,27 @@
+predict:
+  detector:
+    type : grounding_dino
+    model_config_path : 'libs/detectors/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py'
+    weight_path : 'libs/assets/weights/groundingdino_swint_ogc.pth'
+    classes : ["person"]
+    box_threshold : 0.3
+    text_threshol : 0.25
+    device : "cuda"
+    self.with_nms : True
+    self.nms_treshold : 0.5
+
+output:
+  handler:
+    - type : "ScreenHandler"
+      view_w : 640
+      view_h : 360
+
+    - type : "LogHandler"
+      dir : "./logs"
+      file_name : "yoloworld_results_log.csv"
+
+source:
+  type : 'ImageSource'
+  assets_path : "assets/images"
+  pattern : "*.jpg"
+  fps : 30

@@ -1,4 +1,14 @@
+__pycache__/
+*.py[cod]
+
 assets/weights/*
+# 모델 가중치
 *.pth
 *.ckpt
 *.onnx
+
+# 이미지 파일
+*.jpg
+*.jpeg
+
+logs/
