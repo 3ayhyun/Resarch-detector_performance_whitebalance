@@ -15,6 +15,7 @@ output:
     - type : "LogHandler"
       dir : "./logs"
       file_name : "yoloworld_results_log.csv"
+      pixel : True
 
 source:
   type : 'ImageSource'

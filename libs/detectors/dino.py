@@ -88,14 +88,13 @@ class GroundingDINO(BaseDetector):
             cx, cy, w, h = box
             # 모서리 좌표계를 구성하는값  x1, y1, x2, y2로 변환
             # 값은 반드시 [0,1] 구간이어야한다 넘어가면 안됨
-            x1 = max(0.0, min(cx - (w / 2), 1.0))
-            y1 = max(0.0, min(cy - (h / 2), 1.0))
-            x2 = max(0.0, min(cx + (w / 2), 1.0))
-            y2 = max(0.0, min(cy + (h / 2), 1.0))
+            x1 = float(max(0.0, min(cx - (w / 2), 1.0)))
+            y1 = float(max(0.0, min(cy - (h / 2), 1.0)))
+            x2 = float(max(0.0, min(cx + (w / 2), 1.0)))
+            y2 = float(max(0.0, min(cy + (h / 2), 1.0)))
             # detection_results에 추가 
             det_result = [x1, y1, x2, y2, score, label]
             detection_results.append(det_result)
 
         return detection_results
-            
             

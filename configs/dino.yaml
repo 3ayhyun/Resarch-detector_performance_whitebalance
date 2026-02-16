@@ -3,8 +3,8 @@ predict:
     type : GroundingDINO
     model_config_path : 'libs/detectors/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py'
     weight_path : 'assets/weights/groundingdino_swint_ogc.pth'
-    classes : ['person']
-    box_threshold : 0.3
+    classes : ['white shirts']
+    box_threshold : 0.5
     text_threshol : 0.25
     device : "cuda"
     self.with_nms : True
@@ -19,6 +19,7 @@ output:
     - type : "LogHandler"
       dir : "./logs"
       file_name : "dino_results_log.csv"
+      pixel : True
 
 source:
   type : 'ImageSource'

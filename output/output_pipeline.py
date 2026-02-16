@@ -29,19 +29,19 @@ class OutputPipeline(mp.Process):
                 continue
 
             # 저장형태 : [{'frame_id' : frame_id, 'detection_results' : detection_results}, ... ]
-            frame_id = result.get('frame_id')
+            '''frame_id = result.get('frame_id')
             image = result.get('image')
-            detection_results = result.get('detection_results')
+            detection_results = result.get('detection_results')'''
 
-            if image is None:
-                break
+            '''if result.get('image') is None:
+                break'''
 
             # screen handler, log handler를 이용하여 화면출력, 로그 기록 
             for handler in self.handlers:
                 if hasattr(handler, 'draw'): # handler가 draw라는 함수를 가지고 있으면 screen handler
-                    handler.draw(image, detection_results)
+                    handler.draw(result)
                 if hasattr(handler, 'write'):
-                    handler.write(frame_id, detection_results)
+                    handler.write(result)
             
             if cv2.waitKey(1) &0xFF == ord('q'):
                 break

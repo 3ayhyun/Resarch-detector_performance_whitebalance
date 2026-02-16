@@ -13,11 +13,18 @@ class ScreenHandler(BaseHandler):
         print('[ScreenHandler] Initialized', flush=True)
 
     ''' image출력, 검출된객체 박스 그리기 '''    
-    def draw(self, image, detections):
+    def draw(self, result): 
+        # result: {'frame_id' : frame_id,'image' : image,'detection_results' : detection_results,'org_img_shape' : org_img_shape}
         '''
             프레임미다 img와 dets(detection결과)를 받아 화면에 출력, 박스 그리기
         '''
+        image = result.get('image')
+        if image is None:
+            self.close_screen()
+            return 
+
         h, w = image.shape[:2]
+        detections = result.get('detection_results')
 
         if w != self.view_w or h != self.view_h:
             frame = cv2.resize(image, (self.view_w, self.view_h))
@@ -37,7 +44,8 @@ class ScreenHandler(BaseHandler):
 
     ''' 종료 '''
     def close_screen(self):
-        cv2.destroyAllWindows(self.window_name)
+        cv2.destroyAllWindows()
+        print('[ScreenHandler] closed')
 
     ''' 정규화된 좌표 역변환 '''
     def inverse_transform(self, box_norm):

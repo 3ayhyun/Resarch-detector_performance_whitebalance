@@ -22,12 +22,14 @@ class PredictPipeline(mp.Process):
             if image is None:
                 self.results_queue.put(
                     {
-                        'frmae_id' : None,
+                        'frame_id' : None,
                         'image' : None,
                         'detection_results' : None
                     }
                 )
                 break
+            # 원본 이미지의 w, h
+            org_img_shape = image.shape[:2]
             # detector의 predict()에 이미지를 입력해 추론
             detection_results = self.detector.predict(image)
             # 결과 저장 
@@ -36,7 +38,8 @@ class PredictPipeline(mp.Process):
                 {
                     'frame_id' : frame_id,
                     'image' : image,
-                    'detection_results' : detection_results
+                    'detection_results' : detection_results,
+                    'org_img_shape' : org_img_shape
                 }
             )
             
