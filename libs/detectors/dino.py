@@ -51,12 +51,24 @@ class GroundingDINO(BaseDetector):
         # dino의 predict는 이미지를 RGB 형태로 받아야한다 image_source.py를 통해 받은 img는 BGR형태이므로 변환한다 
         image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
+        # resize : 짧은 변이 800일때 scale구하고 긴변에 적용시 1333이 넘지않으면 짧은변이 800이 되는 scale 적용
+        #          반대로 1333이 넘어가면 긴변이 1333이 되도록 scale을 바꾼다 
+        h, w = image.shape[:2]
+        scale = 800 / min(h,w)
+        if max(h,w) * scale > 1333: # 긴 변이 1333을 넘어가면 
+            scale = 1333 / max(h,w)
+
+        scaled_h = int(h * scale)
+        scaled_w = int(w * scale)
+
+        image = cv2.resize(image, (scaled_w, scaled_h))
+
         # numpy 형태로 변환후 정규화 작업
         image = image.astype(np.float32) / 255.0
         image = (image - mean) / std
         # torch.Tensor 형태인 (channel, height, weight)로
         image = np.transpose(image, (2, 0, 1))
-        image = torch.Tensor(image)
+        image = torch.Tensor(image).float()
 
         bboxes, scores, labels = predict(self.model, 
                                          image,
@@ -65,7 +77,7 @@ class GroundingDINO(BaseDetector):
                                          text_threshold=self.text_threshold,
                                          device=self.device)
         '''
-            bboxes : bounding box( 정규화된 [cx, cy, width, height] )
+            bboxes : bounding box( 정규화된 [cx, cy, width, height] )                                                           
             scores : 입력한 텍스트와 박스가 얼마나 유사한가 
             labels : 검출된 객체의 텍스트 리스트의 인덱스값 (["person", "car", ...])에서 bboxes가 어떤걸 의미하는지 
             
