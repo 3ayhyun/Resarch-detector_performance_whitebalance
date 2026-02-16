@@ -10,10 +10,10 @@ class PredictPipeline(mp.Process):
         super().__init__()
         self.config = config
         self.results_queue = results_queue
-        self.detector = build_detector(config['predict']['detector'])
-        self.source = build_source(config['source'])
 
     def run(self):
+        self.detector = build_detector(self.config['predict']['detector'])
+        self.source = build_source(self.config['source'])
         # 이미지가 계속 공급되는한 루프를 돌며 추론, 화면출력, 로그저장을 수행한다 
         while True:
             # source의 read()를 이용해 frame id, image를 불러옴
