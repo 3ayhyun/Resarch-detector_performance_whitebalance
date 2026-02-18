@@ -25,16 +25,18 @@ class OutputPipeline(mp.Process):
 
             try:
                 result = self.results_queue.get(timeout=1) # 호출될때마다 다음걸 하나 꺼내온다 (while로 반복하여 꺼내고 다음거꺼내고 ...)
-            except queue.Empty: # result에 다음 값이 업데이트되어있지 않으면 empty 예외가 발생한다 
+            except queue.Empty: # result에 다음 값이 업데이트되어있지 않으면 empty 예외가 발생한다 => 아래 전부 무시
                 continue
+            
 
             # 저장형태 : [{'frame_id' : frame_id, 'detection_results' : detection_results}, ... ]
             '''frame_id = result.get('frame_id')
             image = result.get('image')
             detection_results = result.get('detection_results')'''
 
-            '''if result.get('image') is None:
-                break'''
+            if result.get('image') is None:
+                print('[OutputPipeline] End closed')
+                break
 
             # screen handler, log handler를 이용하여 화면출력, 로그 기록 
             for handler in self.handlers:
@@ -44,4 +46,5 @@ class OutputPipeline(mp.Process):
                     handler.write(result)
             
             if cv2.waitKey(1) &0xFF == ord('q'):
+                print('[OutputPipeline] Closed by end key')
                 break
