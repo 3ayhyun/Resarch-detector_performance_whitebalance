@@ -24,9 +24,11 @@ class PredictPipeline(mp.Process):
                     {
                         'frame_id' : None,
                         'image' : None,
-                        'detection_results' : None
+                        'detection_results' : None,
+                        'ogr_img_shape' : None
                     }
                 )
+                print('[PredictPipeline] End closed')
                 break
             # 원본 이미지의 w, h
             org_img_shape = image.shape[:2]
