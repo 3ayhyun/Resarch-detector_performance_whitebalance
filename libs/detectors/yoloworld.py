@@ -56,7 +56,8 @@ class YOLOWorld(BaseDetector):
         for bbox, score, id in zip(bboxes, conf_scores, class_ids):
             x1, y1, x2, y2 = bbox
             conf_score = score
-            class_id = id
+            class_id = int(id)
+            class_name = self.classes[class_id]
 
             # 좌표계 정규화 / 좌표는 반드시 [0,1]범위
             x1 = max(0.0, min(x1 / w, 1.0))
@@ -64,7 +65,7 @@ class YOLOWorld(BaseDetector):
             y1 = max(0.0, min(y1 / h, 1.0))
             y2 = max(0.0, min(y2 / h, 1.0))
 
-            det_result = [x1, y1, x2, y2, conf_score, class_id]
+            det_result = [x1, y1, x2, y2, conf_score, class_name]
             detection_results.append(det_result)
 
         return detection_results
