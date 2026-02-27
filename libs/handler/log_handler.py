@@ -11,7 +11,7 @@ class LogHandler(BaseHandler):
         self.log_file = open(self.file_path, 'w', newline='', encoding='utf-8')
         self.writer = csv.writer(self.log_file)
         
-        self.writer.writerow(['frame_id', 'x1', 'y1', 'x2', 'y2', 'score', 'class'])
+        self.writer.writerow(['image_name', 'x1', 'y1', 'x2', 'y2', 'score', 'class'])
 
         print('[LogHandler] Initialized', flush=True)
 
@@ -22,8 +22,8 @@ class LogHandler(BaseHandler):
             detections안에 해당 frame의 모든 detection결과가 들어있다 [[detection], [], ...]
             모든 detection을 한줄씩 csv로 작성해야함 
         '''
-        frame_id = result.get('frame_id')
-        if frame_id is None:
+        image_name = result.get('image_name')
+        if image_name is None:
             self.file_close()
             return 
         
@@ -37,7 +37,7 @@ class LogHandler(BaseHandler):
                 x1, y1, x2, y2 = self.to_pixel(coord, org_img_shape)
             else:
                 x1, y1, x2, y2, score, class_id = det
-            log = [frame_id, x1, y1, x2, y2, score, class_id]
+            log = [image_name, x1, y1, x2, y2, score, class_id]
             self.writer.writerow(log)
         
     def file_close(self):

@@ -17,12 +17,13 @@ class PredictPipeline(mp.Process):
         # 이미지가 계속 공급되는한 루프를 돌며 추론, 화면출력, 로그저장을 수행한다 
         while True:
             # source의 read()를 이용해 frame id, image를 불러옴
-            frame_id, image = self.source.read()
+            frame_id, image_name, image = self.source.read()
             # 더이상 읽을 이미지가 없으면 frame id와 image는 None값을 부여받도록 되어있으므로 
             if image is None:
                 self.results_queue.put(
                     {
                         'frame_id' : None,
+                        'image_name' : None,
                         'image' : None,
                         'detection_results' : None,
                         'ogr_img_shape' : None
@@ -39,6 +40,7 @@ class PredictPipeline(mp.Process):
             self.results_queue.put(
                 {
                     'frame_id' : frame_id,
+                    'image_name' : image_name,
                     'image' : image,
                     'detection_results' : detection_results,
                     'org_img_shape' : org_img_shape
